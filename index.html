@@ -1,0 +1,190 @@
+<!--文档声明为 html（最新html5）-->
+<!doctype html>
+<html>
+	<head>
+		<!--声明当前页面编码格式为国际编码（utf-8）还有一种中文编码（gbk/gb2312）-->
+		<meta charset="UTF-8">
+		<!--网页三要素-->
+		<meta name="Keywords" content="关键词,关键词">
+		<meta name="Description" content="描述">
+		<title>文字样式改动特效</title>
+		<style type="text/css">
+				*{margin:0px;padding:0px; font-family:"微软雅黑";}
+	#box{width:400px;
+		height:450px;
+		background:#000;
+		margin:50px auto;
+		border:5px solid #000;
+		}
+	#show{width:100%;
+		 height:190px;
+		 background:#00ccff;
+		 line-height:200px;
+		 font-size:8px;
+		 font-weight:bold;
+		 color:#fff;
+		 text-align:center;
+		}
+	#font ul{margin-left:10px;
+			margin-top:30px;}
+	#font ul li{width:380px;
+				height:50px;
+				list-style-type:none;
+				color:#ddd;}
+	#font ul li span{display:block;
+					width:50px;
+					height:50px;
+					line-height:50px;
+					text-align:right;
+					float:left;
+					}
+	#font ul li .roll{width:290px;
+					height:50px;
+					float:left;
+					line-height:50px;
+					padding-left:30px;
+					}
+	#font ul li .roll .move{width:200px;
+							height:12px;
+							display:inline-block;
+							background:#fff;
+							margin-left:15px;
+							margin-right:15px;
+							border-radius:10px;
+							background-size:cover;
+							border:1px solid #fff;
+							position:relative;
+							}
+	#font ul li .roll .move .prog{position:absolute;
+								top:0px;
+								width:0px;
+								height:12px;
+								border-radius:10px 0 0 10px;
+								background:url("images/slider-bar.png") bottom;}
+	#font ul li .roll .move .prog .but{width:22px;
+									  height:22px;
+									  position:absolute;
+									  top:-3px;
+									  background:url("images/dot-bg.png") no-repeat;
+									  cursor:pointer;
+									  left:0px;}
+
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<div id="show">文成武德，千秋万载，一统江湖！</div>
+			<div id="font">
+				<ul>
+					<li>
+						<span>字号</span>
+						<div class="roll">
+							8<div class="move">
+								<div class="prog">
+									<div class="but"></div>
+								</div>
+							</div>40px
+						</div>
+					</li>
+					<li>
+						<span>颜色R</span>
+						<div class="roll">
+							0<div class="move">
+								<div class="prog">
+									<div class="but"></div>
+								</div>
+							</div>255
+						</div>
+					</li>
+					<li>
+						<span>G</span>
+						<div class="roll">
+							0<div class="move">
+								<div class="prog">
+									<div class="but"></div>
+								</div>
+							</div>255
+						</div>
+					</li>
+					<li>
+						<span>B</span>
+						<div class="roll">
+							0<div class="move">
+								<div class="prog">
+									<div class="but"></div>
+								</div>
+							</div>255
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//window.onload=function(){}页面加载完后立即执行
+		//DOM  document是最大一个文档对象 
+		var oFont=document.getElementById('show');//通过ID获取元素
+		var oBut=document.getElementsByClassName("but");//通过class名获取元素节点 数组的形式存在 [1,1,2,5] 对象[0]
+		var oProg=document.getElementsByClassName("prog");
+		var onOff=true;//开关
+		var width=[0,0,0,0];
+		var rgb=["00","00","00"];
+
+		for (var i=0;i<oBut.length;i++)//1.声明一个变量 2.做一个判断(一般用控制for循环执行的次数)3.执行大括号语句 4.执行一条件 再执行判断
+		{
+			oBut[i].index=i;
+			oBut[i].onmousedown=function(e){
+				//鼠标点下去的时候
+				e=e||window.event;//用参数e接收这个event对象 做兼容 IE 火狐
+				this.x=e.clientX;//获取鼠标的横坐标  通过自定义x属性接收坐标值 
+				var thisIndex=this;
+				//console.log(x);
+				onOff=true;
+				var lastLeft=width[this.index];
+				document.onmousemove=function(e){
+					if (onOff)//如果if里面的返回值为true 则执行大括号里面的语句  反之不执行
+					{
+						//鼠标滑动事件
+						e=e||window.event;
+						width[thisIndex.index]=e.clientX-thisIndex.x+lastLeft;
+						if (width[thisIndex.index]>=180)width[thisIndex.index]=180;
+						if (width[thisIndex.index]<=0)width[thisIndex.index]=0;
+						oBut[thisIndex.index].style.left=width[thisIndex.index]+"px";
+						oProg[thisIndex.index].style.width=width[thisIndex.index]+"px";
+						if (thisIndex.index==0)
+						{
+							oFont.style.fontSize=width[thisIndex.index]/180*40+8+"px";
+							//驼峰命名法
+						}else{
+							var shuzi=parseInt(width[thisIndex.index]/180*255);
+							rgb[thisIndex.index-1]=color(shuzi);
+							oFont.style.color='#'+rgb[0]+rgb[1]+rgb[2];
+							console.log('#'+rgb[0]+rgb[1]+rgb[2]);
+						}
+						//console.log(width[thisIndex.index]);
+					}		
+				}
+				document.onmouseup=function(){
+					//鼠标松开
+					onOff=false;
+				}
+			}
+		}
+		//#6633cc  00-FF.   数字/16  取余数 
+		//console.log(color(198));//FF
+		function color(sum){
+			var S="",S1="",S2="";
+			var num=["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+			if (sum<=16)
+			{
+				S=num[sum];
+				return "0"+S;
+			}else{
+				S2=num[parseInt(sum/16)];
+				S1=num[sum%16];
+				S=S2+S1;
+				return S;
+			}
+		}
+	</script>
+</html>
